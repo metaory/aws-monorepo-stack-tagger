@@ -30,9 +30,9 @@ const cf = new CloudFormationClient({region});
 
 // --------------------------------------------
 
-const modulesPath = './src/operations';
-
 async function loadModules() {
+	const modulesPath = './src/operations';
+
 	const files = readdirSync(modulesPath);
 
 	const modules = await Promise
