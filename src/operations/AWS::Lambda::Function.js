@@ -8,10 +8,10 @@ export default async function (physicalResourceId) {
 		Resource: arn,
 		Tags: {
 			'user:aws-resource': 'lambda',
-			'user:service': 'MY_AWESOME_TAG_tobzzze',
+			'user:service': 'Zelda',
 		},
 	};
-	// Zz
+
 	const command = new TagResourceCommand(input);
 	const response = await client.send(command);
 	console.log('response:', response);

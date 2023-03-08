@@ -7,7 +7,8 @@ module.exports = {
 	overrides: [
 	],
 	globals: {
-		region: 'writable',
+		region: 'readonly',
+		log: 'readonly',
 	},
 	parserOptions: {
 		ecmaVersion: 'latest',

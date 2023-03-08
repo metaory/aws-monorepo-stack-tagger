@@ -1,6 +1,8 @@
 // Const AWS = require("aws-sdk");
 // const cloudFormation = new AWS.CloudFormation();
 // const { CloudFormationClient, DescribeStacksCommand, } = require("@aws-sdk/client-cloudformation");
+import {readdirSync} from 'node:fs';
+import chalk from 'chalk';
 import {
 	CloudFormationClient,
 	DescribeStackResourcesCommand,
@@ -9,21 +11,43 @@ import {
 } from '@aws-sdk/client-cloudformation';
 import {STSClient, GetCallerIdentityCommand} from '@aws-sdk/client-sts';
 
+// --------------------------------------------
+
 global.region = process.env.AWS_REGION || 'ap-southeast-1';
+
+global.log = (key, value) => console.log(
+	chalk.black.bgYellow.bold(key),
+	chalk.blue(value),
+);
+
+// --------------------------------------------
+
 const StackName = 'staging--web-app-server';
+
+// --------------------------------------------
 
 const cf = new CloudFormationClient({region});
 
-async function loadModule(resourceType) {
-	const path = `./src/operations/${resourceType}.js`;
-	try {
-		const mod = await import(path);
-		return mod.default;
-	} catch (error) {
-		console.log(error.message, path);
-		return () => {};
-	}
+// --------------------------------------------
+
+const modulesPath = './src/operations';
+
+async function loadModules() {
+	const files = readdirSync(modulesPath);
+
+	const modules = await Promise
+		.all(files
+			.map(x => import(`${modulesPath}/${x}`)),
+		);
+
+	return files
+		.map(x => x.split('.')[0])
+		.reduce((acc, cur, i) =>
+			({...acc, [cur]: modules[i]})
+		, {});
 }
+
+// --------------------------------------------
 
 async function getAccountId() {
 	const client = new STSClient();
@@ -32,8 +56,12 @@ async function getAccountId() {
 	return Account;
 }
 
+// --------------------------------------------
+
 async function init() {
 	global.accountId = await getAccountId();
+
+	const modules = await loadModules();
 
 	const {StackResources} = await cf.send(
 		new DescribeStackResourcesCommand({StackName}),
@@ -43,11 +71,14 @@ async function init() {
 
 	for (const resource of StackResources) {
 		const {ResourceType, PhysicalResourceId} = resource;
+		log(ResourceType, PhysicalResourceId);
 
-		const mod = await loadModule(ResourceType);
-
-		mod(PhysicalResourceId);
+		if (ResourceType in modules) {
+			modules[ResourceType].default(PhysicalResourceId);
+		}
 	}
 }
+
+// --------------------------------------------
 
 init().then(console.log).catch(console.error);
