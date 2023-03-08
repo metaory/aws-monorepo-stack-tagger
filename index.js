@@ -22,7 +22,7 @@ global.log = (key, value) => console.log(
 
 // --------------------------------------------
 
-const StackName = 'staging--web-app-server';
+const [,, StackName] = process.argv;
 
 // --------------------------------------------
 
