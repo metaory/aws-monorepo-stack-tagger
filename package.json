@@ -1,16 +1,31 @@
 {
   "name": "mx-aws-tagger",
   "version": "1.0.0",
-  "main": "index.js",
+  "author": "metaory <metaory@gmail.com>",
   "license": "MIT",
+  "bin": {
+    "aws-stack-tagger": "./bin/index.js"
+  },
   "type": "module",
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "engines": {
+    "node": ">=0.16.5"
+  },
   "scripts": {
-    "start": "node index.js"
+    "start": "node bin/index.js"
   },
   "dependencies": {
+    "@aws-sdk/client-athena": "^3.287.0",
     "@aws-sdk/client-cloudformation": "^3.282.0",
+    "@aws-sdk/client-cloudwatch": "^3.287.0",
     "@aws-sdk/client-lambda": "^3.282.0",
-    "chalk": "^5.2.0"
+    "enquirer": "^2.3.6",
+    "fast-levenshtein": "^3.0.0",
+    "yaml-cfn": "^0.3.2",
+    "zx": "^7.2.0"
   },
   "devDependencies": {
     "eslint": "^8.35.0",
