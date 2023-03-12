@@ -1,31 +1,78 @@
+/* eslint-disable no-unused-vars */
 // import {readFileSync} from 'node:fs';
 // capitalize,
 // getImmediateBaseName,
-import {loadModules} from '../src/utils.js';
+import CloudFormation from '../src/cloudformation.js';
+import {
+	logInfo,
+	logWarn,
+	getImmediateBaseName,
+	parseTemplate,
+	loadModules,
+} from '../src/utils.js';
+import {
+	autocompleteInput,
+} from '../src/prompts.js';
 
+// ································································
+const cfn = new CloudFormation();
+const completeStackList = await cfn.listStacks();
+let remainingStacks = completeStackList;
+
+// ································································
 export async function getTemplatePaths() {
 	const res = await $`find . -type f -name "template.yaml"`;
-	return res.stdout.split('\n');
+	return res.stdout.split('\n').filter(x => x);
 }
 
-export function settleStackName(path) {
-	console.group();
-	console.log('settleStackName.path:', path);
-	console.groupEnd();
-	// return 'STACK_NAME';
-	return 'staging--auth';
+const updateRemainingStacks = stackName => {
+	remainingStacks = remainingStacks.filter(x => x.name !== stackName);
+};
+
+// ································································
+export async function settleStackName(path) {
+	// If baseName does exist on remote stack list, no questions asked
+	const baseName = getImmediateBaseName(path);
+	if (remainingStacks.includes(baseName)) {
+		updateRemainingStacks(baseName);
+		return baseName;
+	}
+
+	// Parse template Metadata and extract StackName if exist
+	const metadata = await parseTemplate(path);
+	const key = `${Env}StackName`;
+	if (metadata && key in metadata) {
+		const metadataStackName = metadata[key];
+		updateRemainingStacks(metadataStackName);
+		return metadataStackName;
+	}
+
+	// Prompt for the stack name from the completeStackList
+	const {stackName} = await autocompleteInput('stackName', remainingStacks);
+	updateRemainingStacks(stackName);
+
+	return stackName;
 }
 
+// ································································
 export function settleServiceName(path) {
-	console.group();
-	console.log('settleServiceNam.path:', path);
-	console.groupEnd();
-	return 'SERVICE_NAME';
+	return getImmediateBaseName(path);
 }
 
+// ································································
 export function getResources(stackName) {
 	console.group();
 	console.log(chalk.yellow('getResources.path:'), stackName);
 	console.groupEnd();
 	return [{ResourceType: 'RT', PhysicalResourceId: 'PRI'}];
 }
+
+// ................................................................
+// ································································
+// ////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////
+// console.log('----------------------------------------------------');
+// const test = './service/lambda/service-worker-server/template.yaml';
+// const stackName = await settleStackName(test);
+// console.log('stackName:', stackName);
+

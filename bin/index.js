@@ -5,7 +5,6 @@ import {
 	getTemplatePaths,
 	settleStackName,
 	settleServiceName,
-	getResources,
 } from '../src/index.js';
 import CFN from '../src/cloudformation.js';
 import {logInfo, logWarn, loadModules} from '../src/utils.js';
@@ -13,33 +12,27 @@ import {logInfo, logWarn, loadModules} from '../src/utils.js';
 // ············································································
 
 const templatePaths = await getTemplatePaths();
-console.log('templatePaths:', templatePaths);
 
 const modules = await loadModules();
-console.log('modules:', modules);
 
 const cfn = new CFN();
 
-for (const path of templatePaths) {
-	console.log('------------------');
-	logWarn('path:', path);
+for (const [i, path] of templatePaths.entries()) {
+	console.log('---------------------------');
+	logWarn('template path:', path, `${i}/${templatePaths.length}`);
 
 	const stackName = await settleStackName(path);
 	logInfo('stackName:', stackName);
 
-	process.exit();
 	const serviceName = await settleServiceName(path);
-	console.log('serviceName:', serviceName);
+	logInfo('serviceName:', serviceName);
 
 	const {StackResources} = await cfn.listResources(stackName);
-	console.log('resources:', StackResources);
 	for (const resource of StackResources) {
-		console.log('resource:', resource);
 		const {ResourceType, PhysicalResourceId} = resource;
-		console.log('ResourceType:', ResourceType);
-		console.log('PhysicalResourceId:', PhysicalResourceId);
-		// console.log('PhysicalResourceId:', PhysicalResourceId);
-		// await modules[ResourceType].default(PhysicalResourceId);
+		logInfo(ResourceType, PhysicalResourceId);
+	// 		// console.log('PhysicalResourceId:', PhysicalResourceId);
+	// 		// await modules[ResourceType].default(PhysicalResourceId);
 	}
 }
 

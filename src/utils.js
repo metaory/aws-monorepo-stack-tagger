@@ -1,9 +1,11 @@
 import {resolve} from 'path';
 import {readFileSync, readdirSync} from 'node:fs';
 import {yamlParse} from 'yaml-cfn';
+import {STSClient, GetCallerIdentityCommand} from '@aws-sdk/client-sts';
 
-export const logInfo = (key, value) => console.log(key, chalk.cyan(value));
-export const logWarn = (key, value) => console.log(key, chalk.yellow(value));
+const {log} = console;
+export const logInfo = (key, value, etc = '') => log(key, chalk.cyan(value), chalk.bold.red(etc));
+export const logWarn = (key, value, etc = '') => log(key, chalk.yellow(value), chalk.bold.red(etc));
 
 export function capitalize(str) {
 	return `${str[0].toUpperCase()}${str.substring(1, str.length)}`;
@@ -39,5 +41,11 @@ export async function loadModules() {
 		.reduce((acc, cur, i) =>
 			({...acc, [cur]: modules[i]})
 		, {});
+}
+
+export function getAccountId() {
+	const client = new STSClient();
+	const command = new GetCallerIdentityCommand();
+	return client.send(command);
 }
 

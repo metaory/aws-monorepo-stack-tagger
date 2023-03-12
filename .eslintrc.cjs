@@ -11,6 +11,7 @@ module.exports = {
 		chalk: 'readonly',
 		log: 'readonly',
 		env: 'readonly',
+		Env: 'readonly',
 		argv: 'readonly',
 		YAML: 'readonly',
 		$: 'readonly',

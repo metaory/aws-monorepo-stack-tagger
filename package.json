@@ -1,6 +1,6 @@
 {
   "name": "mx-aws-tagger",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "author": "metaory <metaory@gmail.com>",
   "license": "MIT",
   "bin": {

@@ -17,9 +17,14 @@ export default class CloudFormation {
 		this.client = new CloudFormationClient({region});
 	}
 
-	listStacks() {
+	async listStacks() {
 		const command = new ListStacksCommand({});
-		return this.client.send(command);
+		const {StackSummaries} = await this.client.send(command);
+		return [...new Set(
+			StackSummaries
+				.filter(({StackStatus}) => StackStatus !== 'DELETE_COMPLETE')
+				.map(({StackName}) => StackName),
+		)];
 	}
 
 	listResources(StackName) {
