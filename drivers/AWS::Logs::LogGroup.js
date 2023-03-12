@@ -1,19 +1,21 @@
 import {CloudWatchClient, TagResourceCommand} from '@aws-sdk/client-cloudwatch';
 
-export default async function (physicalResourceId, serviceName) {
-	const arn = `arn:aws:logs:${global.region}:${global.awsAccountId}:log-group:${physicalResourceId}`;
+const _input = (arn, serviceName) => ({
+	Resource: arn,
+	Tags: {
+		'user:aws-resource': 'log-group',
+		'user:service': serviceName,
+	},
+});
 
+export default function ({PhysicalResourceId, ServiceName}) {
+	const arn = `arn:aws:logs:${global.region}:${global.awsAccountId}:log-group:${PhysicalResourceId}`;
 	const client = new CloudWatchClient({region});
-	const input = {
-		ResourceARN: arn,
-		Tags: {
-			'user:aws-resource': 'log-group',
-			'user:service': serviceName,
-		},
-	};
-	console.log('input:', input);
-
+	const input = _input(arn, ServiceName);
 	const command = new TagResourceCommand(input);
-	const response = await client.send(command);
-	console.log('response:', response);
+	return client.send(command);
+}
+
+export function plan({PhysicalResourceId, ServiceName}) {
+	console.log(_input(PhysicalResourceId, ServiceName));
 }

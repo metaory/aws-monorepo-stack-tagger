@@ -28,7 +28,7 @@ export function parseTemplate(path) {
 
 export async function loadModules() {
 	const [, currentScript] = import.meta.url.split('file://');
-	const modulesPath = resolve(currentScript, '../operations/');
+	const modulesPath = resolve(currentScript, '../../drivers/');
 
 	const files = readdirSync(modulesPath);
 
@@ -58,3 +58,6 @@ export function getAccountId() {
 	return client.send(command);
 }
 
+export const fillTo = str => Array
+	.from(str)
+	.map(_ => '╸').join('');

@@ -1,14 +1,10 @@
-/* eslint-disable no-unused-vars */
-// import {readFileSync} from 'node:fs';
-// capitalize,
-// getImmediateBaseName,
 import CloudFormation from '../src/cloudformation.js';
 import {
-	logInfo,
-	logWarn,
-	getImmediateBaseName,
+	// logInfo,
+	// logWarn,
+	// loadModules,
 	parseTemplate,
-	loadModules,
+	getImmediateBaseName,
 } from '../src/utils.js';
 import {
 	autocompleteInput,
@@ -67,12 +63,4 @@ export function getResources(stackName) {
 	return [{ResourceType: 'RT', PhysicalResourceId: 'PRI'}];
 }
 
-// ................................................................
-// ································································
 // ////////////////////////////////////////////////////////////////
-// ////////////////////////////////////////////////////////////////
-// console.log('----------------------------------------------------');
-// const test = './service/lambda/service-worker-server/template.yaml';
-// const stackName = await settleStackName(test);
-// console.log('stackName:', stackName);
-

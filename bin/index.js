@@ -8,9 +8,10 @@ import {
 } from '../src/index.js';
 import CFN from '../src/cloudformation.js';
 import {
-	logInfo,
+	// logInfo,
 	logDanger,
 	logWarn,
+	fillTo,
 	loadModules,
 	logResource,
 } from '../src/utils.js';
@@ -31,25 +32,34 @@ for (const [i, path] of templatePaths.entries()) {
 	console.log('---------------------------');
 	logWarn('template path:', path, `${i}/${templatePaths.length}`);
 
-	const stackName = await settleStackName(path);
-	logDanger('stackName:', stackName);
+	const StackName = await settleStackName(path);
+	logDanger('StackName:', StackName);
 
-	const serviceName = await settleServiceName(path);
-	logDanger('serviceName:', serviceName);
+	const ServiceName = await settleServiceName(path);
+	logDanger('ServiceName:', ServiceName);
 
-	const {StackResources} = await cfn.listResources(stackName);
+	const {StackResources} = await cfn.listResources(StackName);
 	for (const resource of StackResources) {
 		const {ResourceType, PhysicalResourceId} = resource;
 		logResource(Object.keys(modules), ResourceType, PhysicalResourceId);
 
 		// Call the tagger module
 		if (ResourceType in modules) {
+			const payload = {PhysicalResourceId, ServiceName};
+			await modules[ResourceType].plan(payload);
 			const {confirm} = await confirmInput('confirm');
 			if (confirm === false) {
 				continue;
 			}
 
-			await modules[ResourceType].default(PhysicalResourceId, serviceName);
+			try {
+				const response = await modules[ResourceType].default(payload);
+				console.log('response:', response);
+			} catch (error) {
+				console.error(chalk.red(fillTo(error.message)));
+				console.error(chalk.red(error.message));
+				console.error(chalk.red(fillTo(error.message)), '\n');
+			}
 		}
 	}
 }
