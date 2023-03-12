@@ -32,10 +32,10 @@ const updateRemainingStacks = stackName => {
 // ································································
 export async function settleStackName(path) {
 	// If baseName does exist on remote stack list, no questions asked
-	const baseName = getImmediateBaseName(path);
-	if (remainingStacks.includes(baseName)) {
-		updateRemainingStacks(baseName);
-		return baseName;
+	const stackNameFromBaseName = `${global.env}--${getImmediateBaseName(path)}`;
+	if (remainingStacks.includes(stackNameFromBaseName)) {
+		updateRemainingStacks(stackNameFromBaseName);
+		return stackNameFromBaseName;
 	}
 
 	// Parse template Metadata and extract StackName if exist

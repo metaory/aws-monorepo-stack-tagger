@@ -8,6 +8,7 @@ import {
 } from '../src/utils.js';
 
 $.verbose = argv.verbose ?? argv.v ?? false;
+global.region = process.env.AWS_REGION || 'ap-southeast-1';
 
 // const noop = () => {};
 // process.on('uncaughtException', $.verbose ? console.error : noop);
