@@ -16,6 +16,7 @@ import {
 	logResource,
 } from '../src/utils.js';
 import {
+	serviceNamePrompt,
 	confirmInput,
 } from '../src/prompts.js';
 
@@ -35,8 +36,8 @@ for (const [i, path] of templatePaths.entries()) {
 	const StackName = await settleStackName(path);
 	logDanger('StackName:', StackName);
 
-	const ServiceName = await settleServiceName(path);
-	logDanger('ServiceName:', ServiceName);
+	const serviceName = await settleServiceName(path);
+	logDanger('ServiceName:', serviceName);
 
 	const {StackResources} = await cfn.listResources(StackName);
 	for (const resource of StackResources) {
@@ -45,6 +46,7 @@ for (const [i, path] of templatePaths.entries()) {
 
 		// Call the tagger module
 		if (ResourceType in modules) {
+			const {ServiceName} = await serviceNamePrompt(serviceName);
 			const payload = {PhysicalResourceId, ServiceName};
 			await modules[ResourceType].plan(payload);
 			const {confirm} = await confirmInput('confirm');

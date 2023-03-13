@@ -62,3 +62,7 @@ export const confirmInput = (name, message = 'Are you sure?', initial = false) =
 			name,
 			message,
 		});
+
+export const serviceNamePrompt = serviceName => stringPrompt('ServiceName',
+	{message: 'Enter Service Name:', value: serviceName},
+);
