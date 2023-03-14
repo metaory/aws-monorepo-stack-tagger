@@ -26,7 +26,6 @@
     "@aws-sdk/client-lambda": "^3.282.0",
     "@aws-sdk/client-sqs": "^3.290.0",
     "enquirer": "^2.3.6",
-    "fast-levenshtein": "^3.0.0",
     "yaml-cfn": "^0.3.2",
     "zx": "^7.2.0"
   },
