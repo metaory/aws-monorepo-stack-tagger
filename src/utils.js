@@ -44,8 +44,8 @@ export async function loadModules() {
 		, {});
 }
 
-export const logResource = (modules, resourceType, physicalResourceId) => {
-	const active = modules.includes(resourceType);
+export const logResource = (modules, key, resourceType, physicalResourceId) => {
+	const active = modules.includes(key);
 	console.log(
 		chalk[active ? 'yellow' : 'blue'](resourceType),
 		chalk.bold[active ? 'green' : 'cyan'](physicalResourceId),
@@ -58,6 +58,11 @@ export function getAccountId() {
 	return client.send(command);
 }
 
-export const fillTo = str => Array
+export const getServiceKey = ResourceType => {
+	const [Entity, Service] = ResourceType.split('::');
+	return [Entity, Service].join('::');
+};
+
+export const fillTo = (str = '--------------') => Array
 	.from(str)
 	.map(_ => '╸').join('');

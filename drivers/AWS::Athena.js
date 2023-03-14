@@ -1,17 +1,17 @@
-import {CloudWatchClient, TagResourceCommand} from '@aws-sdk/client-cloudwatch';
+import {AthenaClient, TagResourceCommand} from '@aws-sdk/client-athena';
 
 const _input = (arn, serviceName) => ({
 	Resource: arn,
 	Tags: {
-		'user:aws-resource': 'log-group',
+		'user:aws-resource': 'athena',
 		'user:service': serviceName,
 	},
 });
 
 export default function ({PhysicalResourceId, ServiceName}) {
-	const arn = `arn:aws:logs:${global.region}:${global.awsAccountId}:log-group:${PhysicalResourceId}`;
-	const client = new CloudWatchClient({region});
+	const arn = `arn:aws:athena:${global.region}:${global.awsAccountId}:work-group:${PhysicalResourceId}`;
 	const input = _input(arn, ServiceName);
+	const client = new AthenaClient({region});
 	const command = new TagResourceCommand(input);
 	return client.send(command);
 }

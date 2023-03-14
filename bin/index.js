@@ -14,6 +14,7 @@ import {
 	fillTo,
 	loadModules,
 	logResource,
+	getServiceKey,
 } from '../src/utils.js';
 import {
 	serviceNamePrompt,
@@ -42,21 +43,26 @@ for (const [i, path] of templatePaths.entries()) {
 	const {StackResources} = await cfn.listResources(StackName);
 	for (const resource of StackResources) {
 		const {ResourceType, PhysicalResourceId} = resource;
-		logResource(Object.keys(modules), ResourceType, PhysicalResourceId);
+
+		const Key = getServiceKey(ResourceType);
+
+		logResource(Object.keys(modules), Key, ResourceType, PhysicalResourceId);
 
 		// Call the tagger module
-		if (ResourceType in modules) {
+		if (Key in modules) {
 			const {ServiceName} = await serviceNamePrompt(serviceName);
 			const payload = {PhysicalResourceId, ServiceName};
-			await modules[ResourceType].plan(payload);
+			await modules[Key].plan(payload);
 			const {confirm} = await confirmInput('confirm');
 			if (confirm === false) {
 				continue;
 			}
 
 			try {
-				const response = await modules[ResourceType].default(payload);
+				const response = await modules[Key].default(payload);
+				console.error(chalk.green(fillTo()));
 				console.log('response:', response);
+				console.error(chalk.green(fillTo()));
 			} catch (error) {
 				console.error(chalk.red(fillTo(error.message)));
 				console.error(chalk.red(error.message));
