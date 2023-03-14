@@ -55,12 +55,4 @@ export function settleServiceName(path) {
 	return getImmediateBaseName(path);
 }
 
-// ································································
-export function getResources(stackName) {
-	console.group();
-	console.log(chalk.yellow('getResources.path:'), stackName);
-	console.groupEnd();
-	return [{ResourceType: 'RT', PhysicalResourceId: 'PRI'}];
-}
-
 // ////////////////////////////////////////////////////////////////
