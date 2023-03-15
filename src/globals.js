@@ -3,6 +3,8 @@ import {
 	autocompleteInput,
 } from '../src/prompts.js';
 import {
+	logDanger,
+	logWarn,
 	capitalize,
 	getAccountId,
 } from '../src/utils.js';
@@ -15,7 +17,25 @@ global.region = process.env.AWS_REGION || 'ap-southeast-1';
 // process.on('unhandledRejection', $.verbose ? console.error : noop);
 process.on('SIGINT', process.exit);
 
-const {env} = await autocompleteInput('env', ['staging', 'production']);
+if (argv.force && !argv.env) {
+	logDanger('missing', 'env argument');
+	logWarn('try', '-- env staging');
+	process.exit(1);
+}
+
+let env;
+if (argv.env) {
+	env = argv.env;
+} else {
+	const envPromptResponse = await autocompleteInput('env', ['staging', 'production']);
+	env = envPromptResponse.env;
+}
+
+if (!env) {
+	logDanger('missing', 'env');
+	process.exit(1);
+}
+
 global.env = env;
 global.Env = capitalize(env);
 

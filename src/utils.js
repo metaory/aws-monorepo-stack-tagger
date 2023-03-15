@@ -64,5 +64,41 @@ export const getServiceKey = ResourceType => {
 };
 
 export const fillTo = (str = '--------------') => Array
-	.from(str)
+	.from({length: str.length > process.stdout.columns
+		? process.stdout.columns
+		: str.length})
 	.map(_ => '╸').join('');
+
+let succeed = 0;
+let failure = 0;
+
+export const logCounter = () =>
+	console.log(chalk.green('Succeed:'),
+		chalk.green.bold(succeed),
+		'|',
+		chalk.red('Failure:'),
+		chalk.red.bold(failure));
+
+export const logSuccess = response => {
+	++succeed;
+	console.log(chalk.green(fillTo()));
+	console.log('response:', response);
+	console.log(chalk.green(fillTo()), '\n');
+};
+
+export const logFailure = message => {
+	++failure;
+	console.error(chalk.red(fillTo(message)));
+	console.error(chalk.red(message));
+	console.error(chalk.red(fillTo(message)), '\n');
+};
+
+export const logNoStack = path => {
+	logDanger('no', 'StackName', 'was found');
+	logWarn('skipping...', path);
+};
+
+export const logTemplatePath = (path, i, templatePaths) => {
+	console.log('---------------------------');
+	logWarn('template path:', path, `${i}/${templatePaths.length}`);
+};

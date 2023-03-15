@@ -10,11 +10,14 @@ import CFN from '../src/cloudformation.js';
 import {
 	// logInfo,
 	logDanger,
-	logWarn,
-	fillTo,
-	loadModules,
+	logSuccess,
+	logFailure,
+	logCounter,
 	logResource,
+	logNoStack,
+	loadModules,
 	getServiceKey,
+	logTemplatePath,
 } from '../src/utils.js';
 import {
 	serviceNamePrompt,
@@ -47,29 +50,29 @@ const processResource = async (serviceName, resource) => {
 
 	await modules[Key].plan(payload);
 
-	const {confirm} = await confirmInput('confirm');
+	const {confirm} = await confirmInput('confirm', 'Are you sure?', true);
 	if (confirm === false) {
 		return;
 	}
 
 	try {
 		const response = await modules[Key].default(payload);
-		console.log(chalk.green(fillTo()));
-		console.log('response:', response);
-		console.log(chalk.green(fillTo()), '\n');
+		logSuccess(response);
 	} catch (error) {
-		console.error(chalk.red(fillTo(error.message)));
-		console.error(chalk.red(error.message));
-		console.error(chalk.red(fillTo(error.message)), '\n');
+		logFailure(error.message);
 	}
 };
 
 for (const [i, path] of templatePaths.entries()) {
-	console.log('---------------------------');
-	logWarn('template path:', path, `${i}/${templatePaths.length}`);
+	logTemplatePath(path, i, templatePaths);
 
 	const StackName = await settleStackName(path);
 	logDanger('StackName:', StackName);
+
+	if (!StackName) {
+		logNoStack(path);
+		continue;
+	}
 
 	const serviceName = await settleServiceName(path);
 	logDanger('ServiceName:', serviceName);
@@ -77,6 +80,7 @@ for (const [i, path] of templatePaths.entries()) {
 	const {StackResources} = await cfn.listResources(StackName);
 
 	for (const resource of StackResources) {
+		logCounter();
 		await processResource(serviceName, resource);
 	}
 }
