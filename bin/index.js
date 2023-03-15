@@ -40,7 +40,6 @@ const processResource = async (serviceName, resource) => {
 
 	logResource(Object.keys(modules), Key, ResourceType, PhysicalResourceId);
 
-	// Call the tagger module
 	if (Key in modules === false) {
 		return;
 	}
