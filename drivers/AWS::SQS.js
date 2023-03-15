@@ -3,7 +3,7 @@ import {SQSClient, TagQueueCommand} from '@aws-sdk/client-sqs';
 const _input = (QueueUrl, ServiceName) => ({
 	QueueUrl,
 	Tags: {
-		'user:aws-resource': 'sqs',
+		'user:aws-resource': 'SQS',
 		'user:service': ServiceName,
 	},
 });

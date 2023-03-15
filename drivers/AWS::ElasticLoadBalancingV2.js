@@ -3,7 +3,7 @@ import {ElasticLoadBalancingV2Client, AddTagsCommand} from '@aws-sdk/client-elas
 const _input = (arn, serviceName) => ({
 	ResourceArns: [arn],
 	Tags: [
-		{Key: 'user:aws-resource', Value: 'alb'},
+		{Key: 'user:aws-resource', Value: 'ElasticLoadBalancingV2'},
 		{Key: 'user:service', Value: serviceName},
 	],
 });

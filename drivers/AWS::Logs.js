@@ -3,7 +3,7 @@ import {CloudWatchLogsClient, TagResourceCommand} from '@aws-sdk/client-cloudwat
 const _input = (arn, serviceName) => ({
 	resourceArn: arn,
 	tags: {
-		'user:aws-resource': 'log-group',
+		'user:aws-resource': 'Logs',
 		'user:service': serviceName,
 	},
 });

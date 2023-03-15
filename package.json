@@ -25,6 +25,7 @@
     "@aws-sdk/client-dynamodb": "^3.290.0",
     "@aws-sdk/client-ecs": "^3.289.0",
     "@aws-sdk/client-elastic-load-balancing-v2": "^3.290.0",
+    "@aws-sdk/client-elasticsearch-service": "^3.290.0",
     "@aws-sdk/client-lambda": "^3.282.0",
     "@aws-sdk/client-sqs": "^3.290.0",
     "enquirer": "^2.3.6",

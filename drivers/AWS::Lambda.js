@@ -3,7 +3,7 @@ import {LambdaClient, TagResourceCommand} from '@aws-sdk/client-lambda';
 const _input = (arn, serviceName) => ({
 	Resource: arn,
 	Tags: {
-		'user:aws-resource': 'lambda',
+		'user:aws-resource': 'Lambda',
 		'user:service': serviceName,
 	},
 });

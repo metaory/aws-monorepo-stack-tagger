@@ -3,7 +3,7 @@ import {ECSClient, TagResourceCommand} from '@aws-sdk/client-ecs';
 const _input = (arn, serviceName) => ({
 	resourceArn: arn,
 	tags: [
-		{key: 'user:aws-resource', value: 'ecs'},
+		{key: 'user:aws-resource', value: 'ECS'},
 		{key: 'user:service', value: serviceName},
 	],
 });

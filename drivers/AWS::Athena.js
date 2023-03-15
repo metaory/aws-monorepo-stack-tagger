@@ -3,7 +3,7 @@ import {AthenaClient, TagResourceCommand} from '@aws-sdk/client-athena';
 const _input = (arn, serviceName) => ({
 	Resource: arn,
 	Tags: {
-		'user:aws-resource': 'athena',
+		'user:aws-resource': 'Athena',
 		'user:service': serviceName,
 	},
 });

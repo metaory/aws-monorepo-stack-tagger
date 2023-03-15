@@ -3,7 +3,7 @@ import {DynamoDBClient, TagResourceCommand} from '@aws-sdk/client-dynamodb';
 const _input = (arn, serviceName) => ({
 	ResourceArn: arn,
 	Tags: [
-		{key: 'user:aws-resource', value: 'dynamodb'},
+		{key: 'user:aws-resource', value: 'DynamoDB'},
 		{key: 'user:service', value: serviceName},
 	],
 });
